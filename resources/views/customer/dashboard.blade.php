@@ -52,7 +52,12 @@
                         <span class="badge bg-light text-danger border border-danger small">{{ $menu->category }}</span>
                     </div>
                     <h5 class="card-title fw-bold text-dark mb-1">{{ $menu->name }}</h5>
-                    <p class="text-muted small mb-3"><i class="bi bi-shop me-1 text-danger"></i> {{ $menu->merchant->company_name }}</p>
+                    <p class="text-muted small mb-3">
+                        <i class="bi bi-shop me-1 text-danger"></i> 
+                        <a href="{{ route('merchant.public_profile', $menu->merchant->id) }}" class="text-muted text-decoration-none hover-danger fw-bold">
+                            {{ $menu->merchant->company_name }}
+                        </a>
+                    </p>
                     
                     <div class="card-text text-muted small mb-4" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#orderModal{{ $menu->id }}">
                         <p class="mb-1" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 3em;">

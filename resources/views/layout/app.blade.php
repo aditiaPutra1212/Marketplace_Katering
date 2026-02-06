@@ -102,6 +102,20 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
         }
+
+        .hover-danger:hover {
+            color: var(--primary-color) !important;
+            text-decoration: underline !important;
+        }
+
+        .order-card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .order-card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+        }
     </style>
 </head>
 <body class="bg-light">

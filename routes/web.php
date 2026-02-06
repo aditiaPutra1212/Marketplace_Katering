@@ -9,6 +9,7 @@ use App\Http\Middleware\IsCustomer;
 
 // Halaman Utama
 Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('landing');
+Route::get('/merchant-profile/{id}', [\App\Http\Controllers\HomeController::class, 'showMerchantProfile'])->name('merchant.public_profile');
 Route::get('/invoice/{invoice_number}', [\App\Http\Controllers\OrderController::class, 'showInvoice'])->name('invoice.show')->middleware('auth');
 
 // Authentication Routes

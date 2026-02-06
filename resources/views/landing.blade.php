@@ -78,7 +78,12 @@
                                 <h5 class="card-title fw-bold text-dark mb-0">{{ $menu->name }}</h5>
                                 <span class="badge bg-light text-danger border border-danger small">{{ $menu->category }}</span>
                             </div>
-                            <p class="text-muted small mb-3"><i class="bi bi-shop me-1 text-danger"></i> {{ $menu->merchant->company_name ?? $menu->merchant->user->name }}</p>
+                            <p class="text-muted small mb-3">
+                                <i class="bi bi-shop me-1 text-danger"></i> 
+                                <a href="{{ route('merchant.public_profile', $menu->merchant->id) }}" class="text-muted text-decoration-none hover-danger">
+                                    {{ $menu->merchant->company_name ?? $menu->merchant->user->name }}
+                                </a>
+                            </p>
                             
                             <div class="card-text text-muted mb-4" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#detailModal{{ $menu->id }}">
                                 <p class="mb-1" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 3em;">
@@ -87,7 +92,15 @@
                                 <small class="text-danger fw-bold">Lihat Detail...</small>
                             </div>
                             
-                            <a href="{{ route('login') }}" class="btn btn-outline-danger w-100 rounded-pill fw-bold">Pesan Sekarang</a>
+                            @auth
+                                @if(Auth::user()->role == 'customer')
+                                    <button type="button" class="btn btn-danger w-100 rounded-pill fw-bold" data-bs-toggle="modal" data-bs-target="#detailModal{{ $menu->id }}">Pesan Sekarang</button>
+                                @else
+                                    <button disabled class="btn btn-secondary w-100 rounded-pill fw-bold">Pesan Sekarang</button>
+                                @endif
+                            @else
+                                <a href="{{ route('login') }}" class="btn btn-outline-danger w-100 rounded-pill fw-bold">Pesan Sekarang</a>
+                            @endauth
                         </div>
                     </div>
                 </div>
@@ -121,13 +134,44 @@
                                         </div>
 
                                         <div class="mb-4 p-3 bg-light rounded-3">
-                                            <h6 class="fw-bold mb-1"><i class="bi bi-shop text-danger me-2"></i>{{ $menu->merchant->company_name ?? $menu->merchant->user->name }}</h6>
+                                            <h6 class="fw-bold mb-1">
+                                                <i class="bi bi-shop text-danger me-2"></i>
+                                                <a href="{{ route('merchant.public_profile', $menu->merchant->id) }}" class="text-dark text-decoration-none">
+                                                    {{ $menu->merchant->company_name ?? $menu->merchant->user->name }}
+                                                </a>
+                                            </h6>
                                             <p class="small text-muted mb-0"><i class="bi bi-geo-alt me-1"></i> {{ $menu->merchant->address }}</p>
                                         </div>
 
-                                        <a href="{{ route('login') }}" class="btn btn-danger w-100 rounded-pill py-2 fw-bold shadow-sm">
-                                            PESAN SEKARANG <i class="bi bi-arrow-right ms-2"></i>
-                                        </a>
+                                        @auth
+                                            @if(Auth::user()->role == 'customer')
+                                                <form action="{{ route('customer.order.store') }}" method="POST">
+                                                    @csrf
+                                                    <input type="hidden" name="menu_id" value="{{ $menu->id }}">
+                                                    <div class="row">
+                                                        <div class="col-md-5 mb-3">
+                                                            <label class="form-label small fw-bold">Jumlah Porsi</label>
+                                                            <input type="number" name="quantity" class="form-control rounded-3" value="10" min="1" required>
+                                                        </div>
+                                                        <div class="col-md-7 mb-3">
+                                                            <label class="form-label small fw-bold">Tgl Pengiriman</label>
+                                                            <input type="date" name="delivery_date" class="form-control rounded-3" min="{{ date('Y-m-d', strtotime('+1 day')) }}" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label small fw-bold">Alamat Pengiriman</label>
+                                                        <textarea name="delivery_address" class="form-control rounded-3" rows="2" required>{{ Auth::user()->customer->address ?? '' }}</textarea>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-danger w-100 rounded-pill py-2 fw-bold shadow-sm">PESAN SEKARANG</button>
+                                                </form>
+                                            @else
+                                                <p class="text-muted small text-center mb-0">Hanya pelanggan yang dapat memesan.</p>
+                                            @endif
+                                        @else
+                                            <a href="{{ route('login') }}" class="btn btn-danger w-100 rounded-pill py-2 fw-bold shadow-sm">
+                                                LOGIN UNTUK MEMESAN <i class="bi bi-arrow-right ms-2"></i>
+                                            </a>
+                                        @endauth
                                     </div>
                                 </div>
                             </div>
