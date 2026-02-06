@@ -131,30 +131,28 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item"><a class="nav-link px-3" href="{{ route('landing') }}">Beranda</a></li>
-                    <li class="nav-item"><a class="nav-link px-3" href="#about">Tentang Kami</a></li>
-                    <li class="nav-item"><a class="nav-link px-3" href="#menu">Menu</a></li>
-                    <li class="nav-item"><a class="nav-link px-3" href="#contact">Kontak</a></li>
+                    <li class="nav-item"><a class="nav-link px-3 {{ request()->routeIs('landing') ? 'active' : '' }}" href="{{ route('landing') }}">Beranda</a></li>
+                    <li class="nav-item"><a class="nav-link px-3 {{ request()->routeIs('about') ? 'active' : '' }}" href="{{ route('about') }}">Tentang Kami</a></li>
+                    <li class="nav-item"><a class="nav-link px-3 {{ request()->routeIs('contact') ? 'active' : '' }}" href="{{ route('contact') }}">Kontak</a></li>
                     
-                    <div class="ms-lg-4 d-flex">
-                        @guest
-                            <li class="nav-item"><a class="nav-link me-2" href="{{ route('login') }}">Login</a></li>
-                            <li class="nav-item"><a class="btn btn-danger px-4 rounded-pill" href="{{ route('register') }}">Daftar</a></li>
-                        @else
-                            @if(Auth::user()->role == 'customer')
-                                <li class="nav-item"><a class="nav-link" href="{{ route('customer.dashboard') }}">Cari Makan</a></li>
-                                <li class="nav-item"><a class="nav-link" href="{{ route('customer.orders') }}">Riwayat</a></li>
-                            @elseif(Auth::user()->role == 'merchant')
-                                <li class="nav-item"><a class="nav-link" href="{{ route('merchant.dashboard') }}">Dashboard</a></li>
-                            @endif
-                            <li class="nav-item ms-lg-3">
-                                <form action="{{ route('logout') }}" method="POST" class="m-0">
-                                    @csrf
-                                    <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3">Logout</button>
-                                </form>
-                            </li>
-                        @endguest
-                    </div>
+                    @auth
+                        @if(Auth::user()->role == 'customer')
+                            <li class="nav-item"><a class="nav-link px-3 {{ request()->routeIs('customer.dashboard') ? 'active text-danger fw-bold' : '' }}" href="{{ route('customer.dashboard') }}">Menu</a></li>
+                            <li class="nav-item"><a class="nav-link px-3 {{ request()->routeIs('customer.orders') ? 'active text-danger fw-bold' : '' }}" href="{{ route('customer.orders') }}">Riwayat</a></li>
+                        @elseif(Auth::user()->role == 'merchant')
+                            <li class="nav-item"><a class="nav-link px-3 {{ request()->routeIs('merchant.dashboard') ? 'active text-white bg-danger rounded-pill' : '' }}" href="{{ route('merchant.dashboard') }}">Dashboard Merchant</a></li>
+                        @endif
+
+                        <li class="nav-item ms-lg-3">
+                            <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                                @csrf
+                                <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-4 py-2 fw-bold">Logout</button>
+                            </form>
+                        </li>
+                    @else
+                        <li class="nav-item ms-lg-3"><a class="nav-link fw-bold" href="{{ route('login') }}">Login</a></li>
+                        <li class="nav-item ms-lg-2"><a class="btn btn-danger px-4 rounded-pill fw-bold shadow-sm" href="{{ route('register') }}">Daftar</a></li>
+                    @endauth
                 </ul>
             </div>
         </div>
@@ -186,10 +184,10 @@
                 <div class="col-lg-2 col-md-6">
                     <h5 class="text-white mb-4">Tautan Cepat</h5>
                     <ul class="list-unstyled text-white-50">
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-white-50">Beranda</a></li>
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-white-50">Tentang Kami</a></li>
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-white-50">Menu Pilihan</a></li>
-                        <li class="mb-2"><a href="#" class="text-decoration-none text-white-50">Kontak</a></li>
+                        <li class="mb-2"><a href="{{ route('landing') }}" class="text-decoration-none text-white-50 hover-danger">Beranda</a></li>
+                        <li class="mb-2"><a href="{{ route('about') }}" class="text-decoration-none text-white-50 hover-danger">Tentang Kami</a></li>
+                        <li class="mb-2"><a href="{{ route('landing') }}#menu-section" class="text-decoration-none text-white-50 hover-danger">Menu Pilihan</a></li>
+                        <li class="mb-2"><a href="{{ route('contact') }}" class="text-decoration-none text-white-50 hover-danger">Kontak</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-2 col-md-6">

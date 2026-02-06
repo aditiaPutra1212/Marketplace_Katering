@@ -19,4 +19,14 @@ class HomeController extends Controller
         $merchant = Merchant::with('menus')->findOrFail($id);
         return view('merchant_profile', compact('merchant'));
     }
+
+    public function about()
+    {
+        return view('about');
+    }
+
+    public function contact()
+    {
+        return view('contact');
+    }
 }

@@ -9,7 +9,7 @@
                 <h1 class="display-4 fw-bold text-dark mb-4">Nikmati Hidangan Lezat <br><span class="text-danger">Dimana Saja, Kapan Saja</span></h1>
                 <p class="lead text-muted mb-5">Pesan katering favoritmu dari merchant terpercaya dengan kualitas rasa bintang lima dan harga yang bersahabat.</p>
                 <div class="d-flex justify-content-center gap-3">
-                    <a href="#menu" class="btn btn-danger btn-lg px-5 rounded-pill shadow-sm">Jelajahi Menu</a>
+                    <a href="#menu-section" class="btn btn-danger btn-lg px-5 rounded-pill shadow-sm">Jelajahi Menu</a>
                     <a href="{{ route('register') }}" class="btn btn-outline-dark btn-lg px-5 rounded-pill">Mulai Jualan</a>
                 </div>
             </div>
@@ -47,7 +47,7 @@
 </section>
 
 <!-- Menu Section -->
-<section id="menu" class="py-5">
+<section id="menu-section" class="py-5">
     <div class="container py-4">
         <div class="d-flex justify-content-between align-items-end mb-5 animate-fade-up">
             <div>
