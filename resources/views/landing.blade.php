@@ -9,8 +9,18 @@
                 <h1 class="display-4 fw-bold text-dark mb-4">Nikmati Hidangan Lezat <br><span class="text-danger">Dimana Saja, Kapan Saja</span></h1>
                 <p class="lead text-muted mb-5">Pesan katering favoritmu dari merchant terpercaya dengan kualitas rasa bintang lima dan harga yang bersahabat.</p>
                 <div class="d-flex justify-content-center gap-3">
-                    <a href="#menu-section" class="btn btn-danger btn-lg px-5 rounded-pill shadow-sm">Jelajahi Menu</a>
-                    <a href="{{ route('register') }}" class="btn btn-outline-dark btn-lg px-5 rounded-pill">Mulai Jualan</a>
+                    @guest
+                        <a href="#menu-section" class="btn btn-danger btn-lg px-5 rounded-pill shadow-sm">Jelajahi Menu</a>
+                        <a href="{{ route('register') }}" class="btn btn-outline-dark btn-lg px-5 rounded-pill">Mulai Jualan</a>
+                    @else
+                        @if(Auth::user()->role == 'customer')
+                            <a href="{{ route('customer.dashboard') }}" class="btn btn-danger btn-lg px-5 rounded-pill shadow-sm">Beli Katering Sekarang</a>
+                            <a href="{{ route('customer.orders') }}" class="btn btn-outline-dark btn-lg px-5 rounded-pill">Riwayat Pesanan</a>
+                        @elseif(Auth::user()->role == 'merchant')
+                            <a href="{{ route('merchant.dashboard') }}" class="btn btn-danger btn-lg px-5 rounded-pill shadow-sm">Masuk Dashboard Merchant</a>
+                            <a href="{{ route('merchant.public_profile', Auth::user()->merchant->id) }}" class="btn btn-outline-dark btn-lg px-5 rounded-pill">Lihat Profil Saya</a>
+                        @endif
+                    @endguest
                 </div>
             </div>
         </div>
