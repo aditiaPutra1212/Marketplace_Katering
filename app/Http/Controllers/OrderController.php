@@ -17,11 +17,14 @@ class OrderController extends Controller
 
         if ($request->has('search')) {
             $search = $request->search;
-            $query->where('name', 'like', "%{$search}%")
-                  ->orWhereHas('merchant', function($q) use ($search) {
-                      $q->where('address', 'like', "%{$search}%") 
-                        ->orWhere('company_name', 'like', "%{$search}%");
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('category', 'like', "%{$search}%")
+                  ->orWhereHas('merchant', function($mq) use ($search) {
+                      $mq->where('address', 'like', "%{$search}%") 
+                         ->orWhere('company_name', 'like', "%{$search}%");
                   });
+            });
         }
 
         $menus = $query->get();
@@ -36,6 +39,7 @@ class OrderController extends Controller
             'menu_id' => 'required|exists:menus,id',
             'quantity' => 'required|integer|min:1',
             'delivery_date' => 'required|date|after:today',
+            'delivery_address' => 'required|string',
         ]);
 
         $menu = Menu::find($request->menu_id);
@@ -51,6 +55,7 @@ class OrderController extends Controller
             'quantity' => $request->quantity,
             'total_price' => $totalPrice,
             'delivery_date' => $request->delivery_date,
+            'delivery_address' => $request->delivery_address,
             'status' => 'pending',
         ]);
 
@@ -62,5 +67,34 @@ class OrderController extends Controller
     {
         $orders = Order::where('user_id', Auth::id())->with('menu.merchant')->latest()->get();
         return view('customer.orders', compact('orders'));
+    }
+
+    public function cancel($id)
+    {
+        $order = Order::where('id', $id)
+                    ->where('user_id', Auth::id())
+                    ->where('status', 'pending')
+                    ->firstOrFail();
+
+        $order->update(['status' => 'cancelled']);
+
+        return back()->with('success', 'Pesanan berhasil dibatalkan.');
+    }
+
+    public function showInvoice($invoice_number)
+    {
+        $order = Order::where('invoice_number', $invoice_number)
+                      ->with(['user', 'menu.merchant'])
+                      ->firstOrFail();
+
+        // Security check
+        if (Auth::user()->role === 'customer' && $order->user_id !== Auth::id()) {
+            abort(403);
+        }
+        if (Auth::user()->role === 'merchant' && $order->menu->merchant->id !== Auth::user()->merchant->id) {
+            abort(403);
+        }
+
+        return view('invoice', compact('order'));
     }
 }

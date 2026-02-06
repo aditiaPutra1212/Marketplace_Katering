@@ -50,9 +50,9 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed', 
             'role' => 'required|in:merchant,customer',
-            'company_name' => 'required_if:role,merchant',
-            'contact' => 'required_if:role,merchant',
-            'address' => 'required_if:role,merchant',
+            'company_name' => 'required|string|max:255',
+            'contact' => 'required|string|max:20',
+            'address' => 'required|string',
         ]);
 
         $user = User::create([
@@ -62,7 +62,6 @@ class AuthController extends Controller
             'role' => $request->role,
         ]);
 
-
         if ($request->role === 'merchant') {
             Merchant::create([
                 'user_id' => $user->id,
@@ -71,11 +70,17 @@ class AuthController extends Controller
                 'contact' => $request->contact,
                 'description' => 'Katering baru',
             ]);
+        } else {
+            \App\Models\Customer::create([
+                'user_id' => $user->id,
+                'company_name' => $request->company_name,
+                'address' => $request->address,
+                'contact' => $request->contact,
+            ]);
         }
 
         Auth::login($user);
 
-        
         if ($user->role === 'merchant') {
             return redirect()->route('merchant.dashboard');
         }
