@@ -206,8 +206,16 @@
         <h2 class="fw-bold mb-4">Siap untuk Memulai Hidangan Spesial Anda?</h2>
         <p class="lead mb-5 opacity-75">Gabung bersama ribuan customer lainnya yang sudah menikmati kemudahan memesan katering.</p>
         <div class="d-flex justify-content-center gap-3">
-            <a href="{{ route('register') }}" class="btn btn-light btn-lg px-5 rounded-pill text-danger fw-bold shadow-sm">Daftar Sekarang</a>
-            <a href="#contact" class="btn btn-outline-light btn-lg px-5 rounded-pill">Hubungi Kami</a>
+            @guest
+                <a href="{{ route('register') }}" class="btn btn-light btn-lg px-5 rounded-pill text-danger fw-bold shadow-sm">Daftar Sekarang</a>
+            @else
+                @if(Auth::user()->role == 'customer')
+                    <a href="{{ route('customer.dashboard') }}" class="btn btn-light btn-lg px-5 rounded-pill text-danger fw-bold shadow-sm">Pesan Sekarang</a>
+                @elseif(Auth::user()->role == 'merchant')
+                    <a href="{{ route('merchant.dashboard') }}" class="btn btn-light btn-lg px-5 rounded-pill text-danger fw-bold shadow-sm">Masuk Dashboard</a>
+                @endif
+            @endguest
+            <a href="{{ route('contact') }}" class="btn btn-outline-light btn-lg px-5 rounded-pill">Hubungi Kami</a>
         </div>
     </div>
 </section>
